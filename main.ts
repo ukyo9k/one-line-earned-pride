@@ -11,23 +11,30 @@ import { join } from "node:path";
 const LINE =
   "After two years of practising English on the night bus, Rosa got the joke in the break room and laughed half a second before anyone else.";
 
-function main(): void {
-  // Validate: non-empty, a single line, 1-240 characters (code points).
-  const chars = [...LINE];
+// Maximum length of a competition entry line, in code points.
+const MAX_CHARS = 240;
+
+// Validate the entry line: non-empty, a single line, within the limit.
+function validate(line: string): void {
+  const chars = [...line];
   if (chars.length === 0) {
     throw new Error("entry line must not be empty");
   }
-  if (chars.length > 240) {
+  if (chars.length > MAX_CHARS) {
     throw new Error(
-      `entry line is ${chars.length} characters, over the 240 limit`,
+      `entry line is ${chars.length} characters, over the ${MAX_CHARS} limit`,
     );
   }
-  if (LINE.includes("\n") || LINE.includes("\r")) {
+  if (line.includes("\n") || line.includes("\r")) {
     throw new Error("entry line must be a single line");
   }
-  if (LINE.trim().length === 0) {
+  if (line.trim().length === 0) {
     throw new Error("entry line must not be only whitespace");
   }
+}
+
+function main(): void {
+  validate(LINE);
 
   const outDir = process.env.MAKEFUN_OUTPUT_DIR || "/output";
   mkdirSync(outDir, { recursive: true });
